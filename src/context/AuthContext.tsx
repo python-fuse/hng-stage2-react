@@ -39,23 +39,33 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
-    // Mock authentication - in real app, this would be an API call
-    if (email && password) {
-      const mockUser: User = {
-        id: "1",
-        email,
-        name: email.split("@")[0], // Use email prefix as name
-      };
+    // Get registered users from localStorage
+    const savedUsers = localStorage.getItem("ticketapp_users");
+    const users = savedUsers ? JSON.parse(savedUsers) : [];
 
+    // Check if user exists with correct password
+    const user = users.find(
+      (u: User & { password: string }) =>
+        u.email === email && u.password === password
+    );
+
+    if (user) {
       const mockToken = `token_${Date.now()}_${Math.random()}`;
 
-      localStorage.setItem("ticketapp_session", mockToken);
-      localStorage.setItem("ticketapp_user", JSON.stringify(mockUser));
+      // Remove password from user object before storing
+      const { password: _, ...userWithoutPassword } = user;
 
-      setUser(mockUser);
+      localStorage.setItem("ticketapp_session", mockToken);
+      localStorage.setItem(
+        "ticketapp_user",
+        JSON.stringify(userWithoutPassword)
+      );
+
+      setUser(userWithoutPassword);
       setIsAuthenticated(true);
       return true;
     }
+
     return false;
   };
 
@@ -64,24 +74,40 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     password: string,
     name: string
   ): Promise<boolean> => {
-    // Mock signup - in real app, this would be an API call
-    if (email && password && name) {
-      const mockUser: User = {
-        id: `user_${Date.now()}`,
-        email,
-        name,
-      };
+    // Get existing users
+    const savedUsers = localStorage.getItem("ticketapp_users");
+    const users = savedUsers ? JSON.parse(savedUsers) : [];
 
-      const mockToken = `token_${Date.now()}_${Math.random()}`;
-
-      localStorage.setItem("ticketapp_session", mockToken);
-      localStorage.setItem("ticketapp_user", JSON.stringify(mockUser));
-
-      setUser(mockUser);
-      setIsAuthenticated(true);
-      return true;
+    // Check if user already exists
+    const existingUser = users.find(
+      (u: User & { password: string }) => u.email === email
+    );
+    if (existingUser) {
+      return false; // User already exists
     }
-    return false;
+
+    // Create new user
+    const newUser = {
+      id: `user_${Date.now()}`,
+      email,
+      name,
+      password, // Store password for mock authentication
+    };
+
+    // Add to users array and save
+    users.push(newUser);
+    localStorage.setItem("ticketapp_users", JSON.stringify(users));
+
+    // Auto-login the new user
+    const mockToken = `token_${Date.now()}_${Math.random()}`;
+    const { password: _, ...userWithoutPassword } = newUser;
+
+    localStorage.setItem("ticketapp_session", mockToken);
+    localStorage.setItem("ticketapp_user", JSON.stringify(userWithoutPassword));
+
+    setUser(userWithoutPassword);
+    setIsAuthenticated(true);
+    return true;
   };
 
   const logout = () => {

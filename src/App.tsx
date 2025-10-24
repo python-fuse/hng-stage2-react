@@ -11,6 +11,7 @@ import Dashboard from "./pages/Dashboard";
 import TicketManagement from "./pages/TicketManagement";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AppProviders from "./context/AppProviders";
+import { Toaster } from "./components/ui/sonner";
 import "./App.css";
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
+      <Toaster />
     </AppProviders>
   );
 }
