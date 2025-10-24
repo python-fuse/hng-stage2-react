@@ -1,5 +1,5 @@
-import { Link, useNavigate } from "react-router-dom";
-import Layout from "../components/layout/Layout";
+import { Link } from "react-router-dom";
+import AppLayout from "../components/layout/AppLayout";
 import { Button } from "../components/ui/button";
 import {
   Card,
@@ -11,32 +11,19 @@ import { useAuth } from "../context/AuthContext";
 import { useTickets } from "../context/TicketContext";
 
 export default function Dashboard() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const { getTicketStats } = useTickets();
   const stats = getTicketStats();
 
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    // Redirect to login page after logout
-    navigate("/auth/login");
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Layout>
+    <div className="min-h-screen">
+      <AppLayout>
         <div className="py-8">
-          <div className="flex justify-between items-center mb-8">
-            <div>
-              <h1 className="text-3xl font-bold">Ticketly Dashboard</h1>
-              {user && (
-                <p className="text-gray-600 mt-1">Welcome back, {user.name}!</p>
-              )}
-            </div>
-            <Button onClick={handleLogout} variant="outline">
-              Logout
-            </Button>
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold">Dashboard</h1>
+            {user && (
+              <p className="text-gray-600 mt-1">Welcome back, {user.name}!</p>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -110,7 +97,7 @@ export default function Dashboard() {
             </Card>
           </div>
         </div>
-      </Layout>
+      </AppLayout>
     </div>
   );
 }
