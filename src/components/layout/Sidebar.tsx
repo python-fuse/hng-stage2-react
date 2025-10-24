@@ -51,7 +51,6 @@ export default function Sidebar({ children }: SidebarProps) {
               : "text-gray-700 hover:bg-gray-100"
           }`}
         >
-          <span className="text-xl">📊</span>
           <span>Dashboard</span>
         </Link>
 
@@ -64,7 +63,6 @@ export default function Sidebar({ children }: SidebarProps) {
               : "text-gray-700 hover:bg-gray-100"
           }`}
         >
-          <span className="text-xl">🎫</span>
           <span>Tickets</span>
         </Link>
       </nav>

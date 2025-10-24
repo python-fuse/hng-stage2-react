@@ -1,0 +1,498 @@
+TICKETLY VUE.JS IMPLEMENTATION GUIDE
+=====================================
+
+This guide provides detailed instructions for recreating the exact Ticketly Ticket Management Web Application in Vue.js with identical functionality, design, and behavior as the React version.
+
+IMPORTANT: This must be a 1:1 recreation. Every feature, design element, validation rule, error message, and user flow must be identical.
+
+=====================================
+PROJECT OVERVIEW
+=====================================
+
+The React version is a complete ticket management application with:
+- Landing page with wavy backgrounds and decorative circles
+- Authentication system with localStorage persistence
+- Dashboard with ticket statistics
+- Full CRUD ticket management with validation
+- Responsive sidebar navigation
+- Real-time form validation and toast notifications
+
+EXACT REQUIREMENTS TO REPLICATE:
+- Same visual design and layout
+- Same user flows and interactions
+- Same data persistence structure
+- Same validation rules and error messages
+- Same responsive behavior
+- Same accessibility features
+
+=====================================
+TECHNOLOGY STACK FOR VUE.JS VERSION
+=====================================
+
+REQUIRED TECHNOLOGIES:
+1. Vue.js 3.4+ (Composition API)
+2. TypeScript 5.0+
+3. Vite 5.0+ (build tool)
+4. Vue Router 4.0+ (routing)
+5. Tailwind CSS 3.4+ (styling - EXACT same classes)
+6. Pinia (state management - equivalent to React Context)
+
+RECOMMENDED ADDITIONAL LIBRARIES:
+- VueUse (utility functions)
+- Headless UI Vue (accessible components)
+- Heroicons Vue (icons - equivalent to Lucide React)
+- Vue Toastification (toast notifications)
+- VeeValidate + Yup (form validation)
+
+=====================================
+PROJECT STRUCTURE (EXACT MAPPING)
+=====================================
+
+Vue.js project structure should mirror the React version:
+
+src/
+├── components/
+│   ├── forms/
+│   │   ├── CreateTicketForm.vue
+│   │   └── EditTicketForm.vue
+│   ├── layout/
+│   │   ├── AppLayout.vue
+│   │   ├── Sidebar.vue
+│   │   └── Footer.vue
+│   ├── ui/
+│   │   ├── Button.vue
+│   │   ├── Card.vue
+│   │   ├── Input.vue
+│   │   ├── Badge.vue
+│   │   ├── Sheet.vue (mobile drawer)
+│   │   ├── WaveBackground.vue
+│   │   └── DecorativeCircle.vue
+│   └── ProtectedRoute.vue
+├── stores/ (Pinia stores)
+│   ├── auth.ts
+│   └── tickets.ts
+├── views/ (Vue pages)
+│   ├── LandingPage.vue
+│   ├── LoginPage.vue
+│   ├── SignupPage.vue
+│   ├── Dashboard.vue
+│   └── TicketManagement.vue
+├── types/
+│   └── index.ts
+├── utils/
+│   └── statusColors.ts
+├── router/
+│   └── index.ts
+├── App.vue
+└── main.ts
+
+=====================================
+EXACT DATA PERSISTENCE REQUIREMENTS
+=====================================
+
+CRITICAL: Use identical localStorage keys and data structures:
+
+localStorage Keys (MUST BE EXACT):
+- "ticketapp_session" - session token
+- "ticketapp_user" - current user object
+- "ticketapp_users" - array of all registered users
+- "ticketapp_tickets" - array of all tickets
+
+User Object Structure:
+{
+  id: string,
+  email: string,
+  name: string
+}
+
+Ticket Object Structure:
+{
+  id: string,
+  title: string,
+  description?: string,
+  status: "open" | "in_progress" | "closed",
+  priority?: "low" | "medium" | "high",
+  createdAt: string (ISO),
+  updatedAt: string (ISO)
+}
+
+Session Token Format:
+"token_" + timestamp + "_" + random
+
+ID Generation Format:
+User ID: "user_" + timestamp
+Ticket ID: "ticket_" + timestamp + "_" + random
+
+=====================================
+STATE MANAGEMENT (PINIA STORES)
+=====================================
+
+AUTH STORE (stores/auth.ts):
+Required state:
+- user: User | null
+- isAuthenticated: boolean
+
+Required actions:
+- login(email: string, password: string): Promise<boolean>
+- signup(email: string, password: string, name: string): Promise<boolean>
+- logout(): void
+- initializeAuth(): void (check localStorage on app start)
+
+Login Logic (EXACT):
+1. Get users from localStorage "ticketapp_users"
+2. Find user with matching email and password
+3. If found: generate token, store user and token, return true
+4. If not found: return false
+
+Signup Logic (EXACT):
+1. Check if user already exists with email
+2. If exists: return false
+3. If not: create user, add to users array, auto-login, return true
+
+TICKETS STORE (stores/tickets.ts):
+Required state:
+- tickets: Ticket[]
+
+Required actions:
+- addTicket(ticketData: Omit<Ticket, "id" | "createdAt" | "updatedAt">): void
+- updateTicket(id: string, updates: Partial<Ticket>): void
+- deleteTicket(id: string): void
+- getTicketStats(): { total: number, open: number, inProgress: number, closed: number }
+- loadTickets(): void
+- saveTickets(): void
+
+=====================================
+ROUTING REQUIREMENTS
+=====================================
+
+EXACT Routes (Vue Router):
+- "/" - LandingPage.vue
+- "/auth/login" - LoginPage.vue
+- "/auth/signup" - SignupPage.vue
+- "/dashboard" - Dashboard.vue (protected)
+- "/tickets" - TicketManagement.vue (protected)
+- "*" - redirect to "/"
+
+Protected Route Logic:
+Check for "ticketapp_session" in localStorage
+If not found: redirect to "/auth/login"
+
+=====================================
+COMPONENT IMPLEMENTATION DETAILS
+=====================================
+
+LANDING PAGE (LandingPage.vue):
+EXACT Requirements:
+- Full-width hero section with gradient background
+- Wavy SVG background at bottom of hero
+- At least 2 decorative circles overlapping hero
+- "Ticketly" as main heading
+- "Ticket Management Made Simple" as subheading
+- Two CTA buttons: "Get Started" (signup) and "Login"
+- Features section with 3 cards in grid layout
+- Call-to-action section
+- Footer component
+- NO max-width constraint on landing page (full width)
+
+AUTHENTICATION PAGES:
+Login Page Requirements:
+- Centered form with card styling
+- Email and password fields
+- Form validation with inline error display
+- "Sign in to your Ticketly account" subtitle
+- Link to signup page
+- EXACT validation rules: email format, password min 6 chars
+- Toast notification for invalid credentials
+
+Signup Page Requirements:
+- Name, email, password fields
+- Same validation as React version
+- Auto-login after successful signup
+- Link to login page
+- Duplicate email prevention with error message
+
+DASHBOARD (Dashboard.vue):
+EXACT Requirements:
+- Max-width 1440px container
+- Welcome message with user name
+- 3 statistics cards: Total, Open, Resolved tickets
+- "In Progress" card showing in_progress count
+- Quick action buttons linking to ticket management
+- Same color scheme: blue/green/amber/gray
+
+TICKET MANAGEMENT (TicketManagement.vue):
+EXACT Requirements:
+- Max-width 1440px container
+- Search and filter functionality
+- Status filter dropdown: all, open, in_progress, closed
+- Ticket cards in 2-column grid (lg screens)
+- Each card shows: title, description, status badge, priority, dates
+- Edit and Delete buttons on each card
+- Create new ticket button
+- Modal forms for create/edit
+- Delete confirmation
+- Status footer showing filtered count
+
+RESPONSIVE SIDEBAR (Sidebar.vue):
+EXACT Requirements:
+- Desktop: Fixed 256px width sidebar
+- Mobile: Hidden sidebar with hamburger menu
+- Slide-out drawer for mobile (from left)
+- Sidebar content: App name, user welcome, navigation links, stats, logout
+- Navigation links: Dashboard, Tickets
+- Quick stats section identical to React version
+- Breakpoint: lg (1024px) for desktop/mobile switch
+
+=====================================
+STYLING REQUIREMENTS (TAILWIND CSS)
+=====================================
+
+EXACT Tailwind Classes to Use:
+Max Width Container: "w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8"
+Card Styling: "shadow-lg hover:shadow-xl transition-shadow duration-300"
+Button Primary: "bg-blue-600 hover:bg-blue-700 text-white"
+Status Colors:
+- Open: "bg-green-100 text-green-800"
+- In Progress: "bg-amber-100 text-amber-800"  
+- Closed: "bg-gray-100 text-gray-800"
+
+Hero Section: "relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-100"
+
+Sidebar Desktop: "hidden lg:flex lg:shrink-0"
+Sidebar Mobile Header: "lg:hidden bg-white border-b px-4 py-3 flex items-center justify-between"
+
+Grid Layouts:
+- Features: "grid grid-cols-1 md:grid-cols-3 gap-8"
+- Stats: "grid grid-cols-1 md:grid-cols-3 gap-6"
+- Tickets: "grid grid-cols-1 lg:grid-cols-2 gap-6"
+
+=====================================
+FORM VALIDATION REQUIREMENTS
+=====================================
+
+EXACT Validation Rules:
+Ticket Creation/Edit:
+- Title: Required, 1-100 characters, "Title is required"
+- Description: Optional, max 500 characters
+- Status: Required, must be "open" | "in_progress" | "closed"
+- Priority: Optional, must be "low" | "medium" | "high"
+
+Authentication:
+- Email: Required, valid email format, "Please enter a valid email"
+- Password: Required, min 6 characters, "Password must be at least 6 characters"
+- Name: Required for signup, "Name is required"
+
+Error Display:
+- Inline errors below form fields in red text
+- Toast notifications for system-level errors
+- Form submission disabled when validation errors exist
+
+=====================================
+TOAST NOTIFICATION REQUIREMENTS
+=====================================
+
+EXACT Toast Messages (must match React version):
+Success Messages:
+- "Account created successfully! Welcome to Ticketly!"
+- "Welcome back to Ticketly!"
+- "Ticket created successfully!"
+- "Ticket updated successfully!"
+- "Ticket deleted successfully!"
+
+Error Messages:
+- "Invalid email or password. Please check your credentials and try again."
+- "An account with this email already exists. Please use a different email or try logging in."
+- "Something went wrong. Please try again."
+- "Please fix the errors below"
+
+=====================================
+RESPONSIVE DESIGN REQUIREMENTS
+=====================================
+
+Breakpoints (Tailwind):
+- Mobile: < 768px (sm)
+- Tablet: 768px - 1024px (md)
+- Desktop: > 1024px (lg)
+
+Mobile Behavior:
+- Stacked layouts
+- Hamburger menu for navigation
+- Full-width forms and cards
+- Touch-friendly button sizes
+
+Tablet Behavior:
+- 2-column grids where appropriate
+- Responsive sidebar behavior
+
+Desktop Behavior:
+- Fixed sidebar navigation
+- 3-column layouts for stats
+- 2-column ticket grid
+- Hover effects
+
+=====================================
+ACCESSIBILITY REQUIREMENTS
+=====================================
+
+EXACT Requirements:
+- Semantic HTML structure (header, main, section, nav)
+- Proper heading hierarchy (h1, h2, h3)
+- Form labels associated with inputs
+- ARIA labels for interactive elements
+- Focus indicators for keyboard navigation
+- Alt text for decorative elements
+- Color contrast compliance (WCAG 2.1 AA)
+- Screen reader compatible
+
+=====================================
+BUILD AND DEPLOYMENT SETUP
+=====================================
+
+Package.json Scripts:
+{
+  "dev": "vite",
+  "build": "vue-tsc && vite build",
+  "preview": "vite preview",
+  "lint": "eslint . --ext .vue,.js,.ts"
+}
+
+Vite Config Requirements:
+- TypeScript support
+- Vue SFC support
+- Tailwind CSS integration
+- Path aliases (@/ for src/)
+- Build optimization
+
+=====================================
+EXACT USER FLOWS TO REPLICATE
+=====================================
+
+1. LANDING PAGE FLOW:
+   - User visits "/" 
+   - Sees hero with wavy background and circles
+   - Clicks "Get Started" → redirects to "/auth/signup"
+   - Clicks "Login" → redirects to "/auth/login"
+
+2. SIGNUP FLOW:
+   - User fills form with name, email, password
+   - Validation shows inline errors
+   - Submit with valid data creates account
+   - Auto-login and redirect to "/dashboard"
+   - Show success toast
+
+3. LOGIN FLOW:
+   - User fills email/password
+   - Submit with valid credentials logs in
+   - Redirect to "/dashboard"
+   - Show welcome toast
+   - Invalid credentials show error toast
+
+4. DASHBOARD FLOW:
+   - Show welcome message with user name
+   - Display ticket statistics
+   - "Manage Tickets" button → "/tickets"
+   - "Create New Ticket" button → "/tickets"
+   - Logout button clears session → "/"
+
+5. TICKET MANAGEMENT FLOW:
+   - View all tickets in card grid
+   - Search filters tickets in real-time
+   - Status filter updates display
+   - "Create New Ticket" opens modal
+   - Edit ticket opens prefilled modal
+   - Delete shows confirmation dialog
+   - All operations show toast feedback
+
+6. SIDEBAR NAVIGATION:
+   - Desktop: Always visible fixed sidebar
+   - Mobile: Hamburger menu opens slide-out drawer
+   - Navigation links update active state
+   - Stats section updates with ticket changes
+   - Logout from sidebar returns to landing page
+
+=====================================
+TESTING REQUIREMENTS
+=====================================
+
+EXACT Test Cases:
+1. Create account with valid data
+2. Login with created account
+3. Create ticket with all fields
+4. Edit ticket and verify changes
+5. Delete ticket with confirmation
+6. Search functionality
+7. Status filtering
+8. Responsive design on mobile/tablet/desktop
+9. Session persistence across browser refresh
+10. Logout clears session
+11. Protected route access without session
+12. Form validation error states
+
+Pre-seeded Test User:
+Email: admin@ticketly.com
+Password: password123
+Name: Admin User
+
+=====================================
+ERROR HANDLING REQUIREMENTS
+=====================================
+
+EXACT Error Scenarios:
+1. Form validation errors → inline display
+2. Duplicate email signup → specific error message
+3. Invalid login credentials → toast error
+4. Network simulation errors → toast error
+5. Unauthorized access → redirect to login
+6. Invalid ticket data → prevent submission
+7. Delete confirmation → user must confirm
+8. Session expiry → redirect to login
+
+=====================================
+FINAL CHECKLIST
+=====================================
+
+Before considering complete, verify:
+□ All localStorage keys match exactly
+□ All data structures identical
+□ All validation rules implemented
+□ All error messages match
+□ All toast messages match
+□ All routes configured correctly
+□ All responsive breakpoints work
+□ All accessibility features present
+□ All color schemes match
+□ All animations and transitions present
+□ Build succeeds without errors
+□ All user flows function identically
+□ All form validations work
+□ All navigation works
+□ Session management identical
+□ Mobile sidebar behavior matches
+□ Desktop sidebar behavior matches
+□ Search and filtering identical
+□ Statistics calculation identical
+□ Date formatting identical
+
+=====================================
+IMPLEMENTATION NOTES
+=====================================
+
+1. Start with project setup and basic routing
+2. Implement authentication store and pages
+3. Create reusable UI components
+4. Build dashboard with statistics
+5. Implement ticket CRUD functionality
+6. Add responsive sidebar
+7. Implement search and filtering
+8. Add form validation and error handling
+9. Test all user flows thoroughly
+10. Verify responsive design
+11. Create comprehensive README.md
+
+CRITICAL REMINDER: Every detail must match the React version exactly. Use this guide as a checklist and cross-reference with the React implementation constantly.
+
+The Vue.js version should be indistinguishable from the React version in terms of functionality, design, and user experience.
+
+=====================================
+END OF GUIDE
+=====================================
