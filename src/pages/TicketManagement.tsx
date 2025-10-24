@@ -1,19 +1,26 @@
-import { useState } from 'react';
-import AppLayout from '../components/layout/AppLayout';
-import { Button } from '../components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Input } from '../components/ui/input';
-import { Badge } from '../components/ui/badge';
-import CreateTicketForm from '../components/forms/CreateTicketForm';
-import EditTicketForm from '../components/forms/EditTicketForm';
-import { useTickets } from '../context/TicketContext';
-import { getStatusColor, formatStatus } from '../utils/statusColors';
-import type { Ticket } from '../types';
+import { useState } from "react";
+import AppLayout from "../components/layout/AppLayout";
+import { Button } from "../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
+import { Input } from "../components/ui/input";
+import { Badge } from "../components/ui/badge";
+import CreateTicketForm from "../components/forms/CreateTicketForm";
+import EditTicketForm from "../components/forms/EditTicketForm";
+import { useTickets } from "../context/TicketContext";
+import { getStatusColor, formatStatus } from "../utils/statusColors";
+import type { Ticket } from "../types";
 
 export default function TicketManagement() {
   const { tickets, deleteTicket } = useTickets();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'open' | 'in_progress' | 'closed'>('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "open" | "in_progress" | "closed"
+  >("all");
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingTicket, setEditingTicket] = useState<Ticket | null>(null);
 
@@ -180,8 +187,8 @@ export default function TicketManagement() {
                         Updated: {formatDate(ticket.updatedAt)}
                       </span>
                       <div className="flex gap-2">
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           variant="outline"
                           onClick={() => setEditingTicket(ticket)}
                         >
@@ -224,9 +231,9 @@ export default function TicketManagement() {
 
       {/* Edit Ticket Modal */}
       {editingTicket && (
-        <EditTicketForm 
-          ticket={editingTicket} 
-          onClose={() => setEditingTicket(null)} 
+        <EditTicketForm
+          ticket={editingTicket}
+          onClose={() => setEditingTicket(null)}
         />
       )}
     </div>

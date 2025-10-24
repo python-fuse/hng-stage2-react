@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Button } from '../ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
-import { useAuth } from '../../context/AuthContext';
-import { useTickets } from '../../context/TicketContext';
+import { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Button } from "../ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
+import { useAuth } from "../../context/AuthContext";
+import { useTickets } from "../../context/TicketContext";
 
 interface SidebarProps {
   children: React.ReactNode;
@@ -19,7 +19,7 @@ export default function Sidebar({ children }: SidebarProps) {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate("/");
   };
 
   const closeMobileMenu = () => {
@@ -46,9 +46,9 @@ export default function Sidebar({ children }: SidebarProps) {
           to="/dashboard"
           onClick={closeMobileMenu}
           className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
-            isActive('/dashboard')
-              ? 'bg-blue-100 text-blue-700 font-medium'
-              : 'text-gray-700 hover:bg-gray-100'
+            isActive("/dashboard")
+              ? "bg-blue-100 text-blue-700 font-medium"
+              : "text-gray-700 hover:bg-gray-100"
           }`}
         >
           <span className="text-xl">📊</span>
@@ -59,9 +59,9 @@ export default function Sidebar({ children }: SidebarProps) {
           to="/tickets"
           onClick={closeMobileMenu}
           className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
-            isActive('/tickets')
-              ? 'bg-blue-100 text-blue-700 font-medium'
-              : 'text-gray-700 hover:bg-gray-100'
+            isActive("/tickets")
+              ? "bg-blue-100 text-blue-700 font-medium"
+              : "text-gray-700 hover:bg-gray-100"
           }`}
         >
           <span className="text-xl">🎫</span>
@@ -75,19 +75,27 @@ export default function Sidebar({ children }: SidebarProps) {
         <div className="space-y-2">
           <div className="flex justify-between items-center">
             <span className="text-sm text-gray-600">Total</span>
-            <span className="text-sm font-medium text-blue-600">{stats.total}</span>
+            <span className="text-sm font-medium text-blue-600">
+              {stats.total}
+            </span>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-sm text-gray-600">Open</span>
-            <span className="text-sm font-medium text-green-600">{stats.open}</span>
+            <span className="text-sm font-medium text-green-600">
+              {stats.open}
+            </span>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-sm text-gray-600">In Progress</span>
-            <span className="text-sm font-medium text-amber-600">{stats.inProgress}</span>
+            <span className="text-sm font-medium text-amber-600">
+              {stats.inProgress}
+            </span>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-sm text-gray-600">Closed</span>
-            <span className="text-sm font-medium text-gray-600">{stats.closed}</span>
+            <span className="text-sm font-medium text-gray-600">
+              {stats.closed}
+            </span>
           </div>
         </div>
       </div>
@@ -143,9 +151,7 @@ export default function Sidebar({ children }: SidebarProps) {
 
           {/* Main Content */}
           <div className="flex-1 overflow-auto">
-            <div className="max-w-[1440px] mx-auto">
-              {children}
-            </div>
+            <div className="max-w-[1440px] mx-auto">{children}</div>
           </div>
         </div>
 
